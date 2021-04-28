@@ -33,17 +33,16 @@ const CartScreen = ({ match, location, history }) => {
     return (
         <Row>
             <Col md={8}>
-            { 
-                cartItems.reduce((acc, item) => acc + item.qty*item.price, 0).toFixed(3) >= 500 ? "" : cartItems.length === 0 ? "" : 
-                <Alert variant="info">
-                    <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
-                    <p>
-                        Change this and that and try again. Duis mollis, est non commodo
-                        luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.
-                        Cras mattis consectetur purus sit amet fermentum.
-                    </p>
-                </Alert>
-            }
+                { 
+                    cartItems.reduce((acc, item) => acc + item.qty*item.price, 0).toFixed(3) >= 500 ? "" : cartItems.length === 0 ? "" : 
+                    <Alert variant="dark">
+                        <Alert.Heading>Get Free Delivery!</Alert.Heading>
+                        <Message variant="dark">
+                            Add items worth <b>₹{(500 - cartItems.reduce((acc, item) => acc + item.qty*item.price, 0).toFixed(2)).toFixed(2)}</b> more for free delivery 
+                            &nbsp;<Link to='/'> Add Items <i class="fas fa-arrow-circle-right"></i></Link>
+                        </Message>
+                    </Alert>
+                }
                 <h1>Shopping Cart</h1>
                 { cartItems.length === 0 ? 
                 <Message>
@@ -86,14 +85,16 @@ const CartScreen = ({ match, location, history }) => {
                 <br></br>
                 <br></br>
                 <Card border="dark">
-                    <Card.Header as="h5"><b>total amount : &nbsp;₹ { cartItems.reduce((acc, item) => acc + item.qty*item.price, 0).toFixed(3) }</b></Card.Header>
+                    <Card.Header as="h5"><b>total amount : &nbsp;₹ { cartItems.reduce((acc, item) => acc + item.qty*item.price, 0).toFixed(2) }</b></Card.Header>
                     <Card.Body>
                         <Card.Text>Quantity : &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;( {cartItems.reduce((acc, item) => acc + item.qty, 0)} items )</Card.Text>
                         <Card.Text>
-                            Delivery Charges : &emsp;&emsp;&emsp;&emsp; { cartItems.reduce((acc, item) => acc + item.qty*item.price, 0).toFixed(3) >= 500 ? "FREE" : cartItems.length === 0 ? "" : "₹50"}
+                            Delivery Charges : &emsp;&emsp;&emsp;&emsp; { cartItems.reduce((acc, item) => acc + item.qty*item.price, 0).toFixed(2) >= 500 ? "FREE" : cartItems.length === 0 ? "" : "₹50"}
                         </Card.Text>
                         <Card.Text>
-                            Delivery By : &emsp;
+                            Delivery By : &emsp;&emsp;&emsp;&emsp;&emsp; {cartItems.length === 0 ? "" : 
+                            new Date().toDateString()
+                            }
                         </Card.Text>
                         <Button variant="primary" disabled={cartItems.length === 0} onClick={checkoutHandler} block>Proceed to Checkout</Button>
                     </Card.Body>
