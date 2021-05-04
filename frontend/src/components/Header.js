@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { LinkContainer } from 'react-router-bootstrap'
-import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap'
+import { Badge, Button, Container, Nav, Navbar, NavDropdown } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { logout } from '../actions/userActions'
 
@@ -15,6 +15,9 @@ const Header = () => {
         dispatch(logout())
     }
 
+    const cart = useSelector((state) => state.cart)
+    const { cartItems } = cart
+
     return (
         <header>
             <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
@@ -26,11 +29,15 @@ const Header = () => {
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="ml-auto">
                             <LinkContainer to="/cart">
-                                <Nav.Link><i class="fas fa-shopping-cart"></i> Cart</Nav.Link> 
+                                <Nav.Link>
+                                    <i class="fas fa-shopping-cart"></i> Cart 
+                                    <Badge variant="dark">{cartItems.reduce((acc, item) => acc + item.qty, 0)}</Badge>
+                                </Nav.Link> 
                             </LinkContainer>
                             { userInfo ? (
                                 <NavDropdown title={userInfo.name} id="username">
                                     <NavDropdown.Item href="/profile"><i class="fas fa-user-circle"></i> Profile</NavDropdown.Item>
+                                    <NavDropdown.Divider />
                                     <NavDropdown.Item href="/"><i class="fas fa-box-open"></i> Orders</NavDropdown.Item>
                                     {/* <NavDropdown.Item href="/"></NavDropdown.Item> */}
                                     <NavDropdown.Divider />
