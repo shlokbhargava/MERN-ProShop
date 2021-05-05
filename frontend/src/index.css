@@ -10,3 +10,7 @@ h1 {
 b {
     font-size: large;
 }
+
+.bread-crumb {
+    border-radius: 10% solid black;
+}
