@@ -1,17 +1,19 @@
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import { Button, Card, Col, Image, ListGroup, ListGroupItem, Row } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import CheckoutSteps from '../components/CheckoutSteps'
 import Message from '../components/Message'
+import { createOrder } from '../actions/orderActions'
 
-const PlaceOrderScreen = () => {
+const PlaceOrderScreen = ({ history }) => {
+    const dispatch = useDispatch()
 
     const cart = useSelector(state => state.cart)
     const { cartItems, shippingAddress, paymentMethod } = cart
 
-    const userLogin = useSelector(state => state.userLogin)
-    const { userInfo } = userLogin
+    // const userLogin = useSelector(state => state.userLogin)
+    // const { userInfo } = userLogin
 
     const getDeliveryDate = () => {
         const day = new Date()
@@ -26,8 +28,27 @@ const PlaceOrderScreen = () => {
     cart.taxPrice = (0.18 * Number(cart.itemPrice)).toFixed(2)
     cart.totalPrice = (Number(cart.itemPrice) + Number(cart.shippingPrice) + Number(cart.taxPrice)).toFixed(2)
 
-    const placeOrderHandler = () => {
+    const orderCreate = useSelector((state) => state.orderCreate)
+    const { order, success, error } = orderCreate
 
+    useEffect(() => {
+        console.log("success" + success)
+        if (success) {
+            history.push(`/order/${order._id}`)
+        }
+        // eslint-disable-next-line
+    }, [history, success])
+
+    const placeOrderHandler = () => {
+        dispatch(createOrder({
+            orderItems: cart.cartItems,
+            shippingAddress: cart.shippingAddress,
+            paymentMethod: cart.paymentMethod,
+            itemPrice: cart.itemPrice,
+            shippingPrice: cart.shippingPrice,
+            taxPrice: cart.taxPrice,
+            totalPrice: cart.totalPrice,
+        }))
     }
 
     return (
@@ -63,7 +84,7 @@ const PlaceOrderScreen = () => {
 
                         <ListGroupItem>
                             <h4>2. Deliver To</h4>
-                            <b>{userInfo.name}</b> <br></br>
+                            {/* <b>{userInfo.name}</b> <br></br> */}
                             {shippingAddress.address}, <br></br>
                             {shippingAddress.city} - {shippingAddress.postalCode}, <br></br>
                             {shippingAddress.country} <br></br>
@@ -107,6 +128,10 @@ const PlaceOrderScreen = () => {
                                     <Col>₹{cart.totalPrice}</Col>
                                 </Row>
                             </ListGroupItem>
+                                        
+                            {error && 
+                                <ListGroupItem><Message variant='danger'>{error}</Message></ListGroupItem>
+                            }
 
                             <ListGroupItem>
                                 <Button type='button' variant='primary' disabled={cartItems.length === 0} onClick={placeOrderHandler} block>Place Order</Button>

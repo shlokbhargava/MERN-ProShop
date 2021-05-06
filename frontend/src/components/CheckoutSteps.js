@@ -1,5 +1,5 @@
 import React from 'react'
-import { Nav, NavItem, ProgressBar } from 'react-bootstrap'
+import { Nav, NavItem } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 
 const CheckoutSteps = ({ step1, step2, step3, step4 }) => {
