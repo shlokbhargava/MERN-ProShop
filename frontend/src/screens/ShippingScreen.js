@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import { Breadcrumb, Button, Col, Form, Row } from 'react-bootstrap'
+import { Button, Form } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import FormContainer from '../components/FormContainer'
+import CheckoutSteps from '../components/CheckoutSteps'
 import { saveShippingAddress } from '../actions/cartActions'
 
 const ShippingScreen = ({ history }) => {
@@ -23,24 +24,8 @@ const ShippingScreen = ({ history }) => {
     }
 
     return (
-        <FormContainer>
-
-            <Row>
-                <Breadcrumb>
-                    <Col sm={4}>
-                        <Breadcrumb.Item style={{ border: '50% 5px solid black' }} href="/"><i class="fas fa-shopping-cart fa-2x"></i></Breadcrumb.Item>  
-                    </Col>
-                    <Col sm={4}>
-                        <Breadcrumb.Item style={{ border: '50% 5px solid black' }} href="/" active>
-                            <i class="fas fa-address-card fa-2x"></i>
-                        </Breadcrumb.Item>
-                    </Col>
-                    <Col sm={4}>
-                        <Breadcrumb.Item style={{ border: '50% 5px solid black' }}><i class="far fa-credit-card fa-2x"></i></Breadcrumb.Item>
-                    </Col>
-                </Breadcrumb>
-            </Row>
-
+        <FormContainer> 
+            <CheckoutSteps step1 step2 />
             <h3>Shipping Address</h3>
             <Form onSubmit={submitHandler}>
                 <Form.Group controlId="address">
