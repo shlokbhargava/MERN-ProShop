@@ -93,7 +93,7 @@ const CartScreen = ({ match, location, history }) => {
                 <br></br>
                 <Card>
                     <ListGroup variant='flush'>
-                        <Card.Header as='h5'><b>total amount : ₹{ cartItems.reduce((acc, item) => acc + item.qty*item.price, 0).toFixed(2) }</b>
+                        <Card.Header as='h5'><b>Cart total : ₹{ cartItems.reduce((acc, item) => acc + item.qty*item.price, 0).toFixed(2) }</b>
                         </Card.Header>
                         <ListGroupItem>
                             <Row>
