@@ -30,6 +30,13 @@ const CartScreen = ({ match, location, history }) => {
         history.push('/login?redirect=shipping' )
     }
 
+    const getDeliveryDate = () => {
+        const day = new Date()
+        const nextDay = new Date(day)
+        nextDay.setDate(day.getDate() + 2)
+        return nextDay.toDateString()
+    }
+
     return (
         <Row>
             <Col md={8}>
@@ -84,20 +91,32 @@ const CartScreen = ({ match, location, history }) => {
             <Col md={4}>
                 <br></br>
                 <br></br>
-                <Card border="dark">
-                    <Card.Header as="h5"><b>total amount : &nbsp;₹ { cartItems.reduce((acc, item) => acc + item.qty*item.price, 0).toFixed(2) }</b></Card.Header>
-                    <Card.Body>
-                        <Card.Text>Quantity : &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;( {cartItems.reduce((acc, item) => acc + item.qty, 0)} items )</Card.Text>
-                        <Card.Text>
-                            Delivery Charges : &emsp;&emsp;&emsp;&emsp; { cartItems.reduce((acc, item) => acc + item.qty*item.price, 0).toFixed(2) >= 500 ? "FREE" : cartItems.length === 0 ? "" : "₹50"}
-                        </Card.Text>
-                        <Card.Text>
-                            Delivery By : &emsp;&emsp;&emsp;&emsp;&emsp; {cartItems.length === 0 ? "" : 
-                            new Date().toDateString()
-                            }
-                        </Card.Text>
-                        <Button variant="primary" disabled={cartItems.length === 0} onClick={checkoutHandler} block>Proceed to Checkout</Button>
-                    </Card.Body>
+                <Card>
+                    <ListGroup variant='flush'>
+                        <Card.Header as='h5'><b>total amount : ₹{ cartItems.reduce((acc, item) => acc + item.qty*item.price, 0).toFixed(2) }</b>
+                        </Card.Header>
+                        <ListGroupItem>
+                            <Row>
+                                <Col>Quantity : </Col>
+                                <Col>( {cartItems.reduce((acc, item) => acc + item.qty, 0)} items )</Col>
+                            </Row>
+                        </ListGroupItem>
+                        <ListGroupItem>
+                            <Row>
+                                <Col>Shipping Charges : </Col>
+                                <Col>{ cartItems.reduce((acc, item) => acc + item.qty*item.price, 0).toFixed(2) >= 500 ? "FREE" : cartItems.length === 0 ? "" : "₹100.00"}</Col>
+                            </Row>
+                        </ListGroupItem>
+                        <ListGroupItem>
+                            <Row>
+                                <Col>Delivery By : </Col>
+                                <Col>{cartItems.length === 0 ? "" : getDeliveryDate()}</Col>
+                            </Row>
+                        </ListGroupItem>
+                        <ListGroupItem>
+                            <Button variant="primary" disabled={cartItems.length === 0} onClick={checkoutHandler} block>Proceed to Checkout</Button>
+                        </ListGroupItem>
+                    </ListGroup>
                 </Card>
             </Col>
         </Row>
