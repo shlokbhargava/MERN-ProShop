@@ -27,7 +27,7 @@ const OrderScreen = ({ match }) => {
 
     useEffect(() => {
         dispatch(getOrderDetails(orderId))
-    }, [])
+    }, [dispatch, orderId])
 
     const getEachItemTotal = (qty, price) => {
         return Number(qty * price).toFixed(2)
