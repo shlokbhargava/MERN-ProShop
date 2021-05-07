@@ -52,7 +52,7 @@ const OrderScreen = ({ match }) => {
                                             <Col>
                                                 <Link to={`/product/${item.product}`}>{item.name}</Link>
                                                 <p>Quantity: {item.qty}</p>
-                                                Delivery By: {getDeliveryDate()}
+                                                <strong>Delivery By</strong>: {getDeliveryDate()}
                                             </Col>
                                             <Col md={4}>
                                                 {item.qty} x ₹{item.price} = ₹{getEachItemTotal(item.qty, item.price)}
@@ -66,16 +66,17 @@ const OrderScreen = ({ match }) => {
 
                     <ListGroupItem>
                         <h4>2. Deliver To</h4>
-                        <string>{order.user.name}</string><br></br>
-                        {order.user.email}<br></br>
-                        {order.shippingAddress.address}, <br></br>
-                        {order.shippingAddress.city} - {order.shippingAddress.postalCode}, <br></br>
-                        {order.shippingAddress.country} <br></br>
+                        <strong>Name: </strong>{order.user.name}<br></br>
+                        <strong>Email: </strong><a href={`mailto:${order.user.email}`}>{order.user.email}</a><br></br>
+                        <p> <strong>Address: </strong>
+                            {order.shippingAddress.address}, {order.shippingAddress.city} - {order.shippingAddress.postalCode}, {order.shippingAddress.country}
+                        </p>
                     </ListGroupItem>
 
                     <ListGroupItem>
                         <h4>3. Payment Method</h4>
                         {order.paymentMethod}
+                        {order.isPaid ? <Message variant='success'>Paid</Message> : <Message variant='warning'>Payment Pending</Message>}
                     </ListGroupItem>
                 </ListGroup>
             </Col>
