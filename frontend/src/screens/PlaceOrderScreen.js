@@ -15,9 +15,6 @@ const PlaceOrderScreen = ({ history }) => {
     const cart = useSelector(state => state.cart)
     const { cartItems, shippingAddress, paymentMethod } = cart
 
-    // const userLogin = useSelector(state => state.userLogin)
-    // const { userInfo } = userLogin
-
     const getDeliveryDate = () => {
         const day = new Date()
         const nextDay = new Date(day)
@@ -135,7 +132,7 @@ const PlaceOrderScreen = ({ history }) => {
                         </ListGroupItem>
 
                         <ListGroupItem>
-                            <h4>2. Deliver To</h4>
+                            <h4>2. Shipping</h4>
                             {/* <b>{userInfo.name}</b> <br></br> */}
                             {shippingAddress.address}, <br></br>
                             {shippingAddress.city} - {shippingAddress.postalCode}, <br></br>

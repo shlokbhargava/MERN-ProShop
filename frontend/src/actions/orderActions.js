@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { CREATE_ORDER_FAIL, CREATE_ORDER_REQUEST, CREATE_ORDER_SUCCESS, ORDER_DETAILS_FAIL, ORDER_DETAILS_REQUEST } from '../constants/orderConstants'
+import { CREATE_ORDER_FAIL, CREATE_ORDER_REQUEST, CREATE_ORDER_SUCCESS, ORDER_DETAILS_FAIL, ORDER_DETAILS_REQUEST, ORDER_DETAILS_SUCCESS } from '../constants/orderConstants'
 
 
 export const createOrder = (order) => async (dispatch, getState) => {
@@ -49,8 +49,8 @@ export const getOrderDetails = (id) => async (dispatch, getState) => {
         const { data } = await axios.get(`/api/orders/${id}`, config)
 
         dispatch({
-            type: ORDER_DETAILS_FAIL,
-            payload: data
+            type: ORDER_DETAILS_SUCCESS,
+            payload: data, 
         })
     } catch (error) {
         dispatch({
