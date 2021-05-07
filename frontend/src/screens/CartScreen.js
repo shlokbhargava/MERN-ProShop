@@ -33,7 +33,7 @@ const CartScreen = ({ match, location, history }) => {
     const getDeliveryDate = () => {
         const day = new Date()
         const nextDay = new Date(day)
-        nextDay.setDate(day.getDate() + 2)
+        nextDay.setDate(day.getDate() + 3)
         return nextDay.toDateString()
     }
 
@@ -104,7 +104,7 @@ const CartScreen = ({ match, location, history }) => {
                         <ListGroupItem>
                             <Row>
                                 <Col>Shipping Charges : </Col>
-                                <Col>{ cartItems.reduce((acc, item) => acc + item.qty*item.price, 0).toFixed(2) >= 500 ? "FREE" : cartItems.length === 0 ? "" : "₹100.00"}</Col>
+                                <Col>{ cartItems.reduce((acc, item) => acc + item.qty*item.price, 0).toFixed(2) >= 500 ? "FREE" : cartItems.length === 0 ? "" : "₹50.00"}</Col>
                             </Row>
                         </ListGroupItem>
                         <ListGroupItem>

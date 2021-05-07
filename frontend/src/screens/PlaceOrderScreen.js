@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import { Button, Card, Col, Image, ListGroup, ListGroupItem, Row } from 'react-bootstrap'
+import React, { useEffect, useState } from 'react'
+import { Alert, Button, Card, Col, Image, ListGroup, ListGroupItem, Row } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import CheckoutSteps from '../components/CheckoutSteps'
@@ -7,6 +7,9 @@ import Message from '../components/Message'
 import { createOrder } from '../actions/orderActions'
 
 const PlaceOrderScreen = ({ history }) => {
+
+    const [show, setShow] = useState(true)
+
     const dispatch = useDispatch()
 
     const cart = useSelector(state => state.cart)
@@ -18,21 +21,27 @@ const PlaceOrderScreen = ({ history }) => {
     const getDeliveryDate = () => {
         const day = new Date()
         const nextDay = new Date(day)
-        nextDay.setDate(day.getDate() + 2)
+        if (!show) {
+            nextDay.setDate(day.getDate() + 1)
+        } else {
+            nextDay.setDate(day.getDate() + 3)
+        }
         return nextDay.toDateString()
     }
 
     // Calculate Prices
-    cart.itemPrice = cartItems.reduce((acc, item) => acc + item.qty*item.price, 0).toFixed(2) 
-    cart.shippingPrice = (cart.itemPrice > 500 ? 0 : 100).toFixed(2)
+    cart.itemPrice = Number(cartItems.reduce((acc, item) => acc + item.qty*item.price, 0)).toFixed(2) 
+    cart.shippingPrice = Number(cart.itemPrice > 500 ? 0 : !show ? 0 : 50).toFixed(2) 
+    cart.fastDeliveryPrice = Number(!show ? 100 : 0).toFixed(2)
     cart.taxPrice = (0.18 * Number(cart.itemPrice)).toFixed(2)
-    cart.totalPrice = (Number(cart.itemPrice) + Number(cart.shippingPrice) + Number(cart.taxPrice)).toFixed(2)
+    cart.totalPrice = (Number(cart.itemPrice) + Number(cart.shippingPrice) + Number(cart.taxPrice) + Number(cart.fastDeliveryPrice)).toFixed(2)
+
 
     const orderCreate = useSelector((state) => state.orderCreate)
     const { order, success, error } = orderCreate
 
     useEffect(() => {
-        console.log("success" + success)
+
         if (success) {
             history.push(`/order/${order._id}`)
         }
@@ -45,11 +54,54 @@ const PlaceOrderScreen = ({ history }) => {
             shippingAddress: cart.shippingAddress,
             paymentMethod: cart.paymentMethod,
             itemPrice: cart.itemPrice,
-            shippingPrice: cart.shippingPrice,
             taxPrice: cart.taxPrice,
+            shippingPrice: cart.shippingPrice,
+            fastDeliveryPrice: cart.fastDeliveryPrice,
             totalPrice: cart.totalPrice,
         }))
     }
+
+    const getEachItemTotal = (qty, price) => {
+        return Number(qty * price).toFixed(2)
+    }
+
+    const getFastDelivery = () => {
+
+        return (
+          <>
+            {show &&
+                <Alert show={show} variant="info">
+                    <Alert.Heading>GET FAST DELIVERY!</Alert.Heading>
+                    <p>
+                        Now Get next Day Delivery at just ₹100 and zero shipping charges 
+                    </p>
+                    <hr />
+                    <div className="d-flex justify-content-end">
+                        <Button onClick={() => setShow(false)} variant="outline-info" block>
+                        Avail Now
+                        </Button>
+                    </div>
+                </Alert>
+            }
+      
+            {!show && 
+                <Alert show={!show} variant="success">
+                    <Alert.Heading>CONGRATULATIONS!</Alert.Heading>
+                    <p>
+                        You have availed for next Day Delivery and zero shipping charges
+                    </p>
+                    <hr />
+                    <div className="d-flex justify-content-end">
+                    <Button onClick={() => setShow(true)} variant="outline-success" block>
+                        Remove
+                    </Button>
+                    </div>
+              </Alert>
+            }
+          </>
+        );
+      }
+
 
     return (
         <>
@@ -73,7 +125,7 @@ const PlaceOrderScreen = ({ history }) => {
                                                     Delivery By: {getDeliveryDate()}
                                                 </Col>
                                                 <Col md={4}>
-                                                    {item.qty} x ₹{item.price} = ₹{item.qty * item.price}
+                                                    {item.qty} x ₹{item.price} = ₹{getEachItemTotal(item.qty, item.price)}
                                                 </Col>
                                             </Row>
                                         </ListGroupItem>
@@ -98,6 +150,10 @@ const PlaceOrderScreen = ({ history }) => {
                 </Col>
 
                 <Col md={4}>
+
+                    {getFastDelivery()}
+
+
                     <Card>
                         <ListGroup variant='flush'>
                             <Card.Header as="h5" className="text-center">Order Summary</Card.Header>
@@ -108,12 +164,29 @@ const PlaceOrderScreen = ({ history }) => {
                                 </Row>
                             </ListGroupItem>
 
-                            <ListGroupItem>
+                            {show && 
+                                <ListGroupItem>
+                                    <Row>
+                                        <Col>Shipping : </Col>
+                                        <Col>₹{cart.shippingPrice}</Col>
+                                    </Row>
+                                </ListGroupItem>
+                            }
+                            {/* <ListGroupItem>
                                 <Row>
                                     <Col>Shipping : </Col>
                                     <Col>₹{cart.shippingPrice}</Col>
                                 </Row>
-                            </ListGroupItem>
+                            </ListGroupItem> */}
+
+                            {!show && 
+                                <ListGroupItem>
+                                    <Row>
+                                        <Col>Fast Delivery : </Col>
+                                        <Col>₹{cart.fastDeliveryPrice}</Col>
+                                    </Row>
+                                </ListGroupItem>
+                            }
 
                             <ListGroupItem>
                                 <Row>
