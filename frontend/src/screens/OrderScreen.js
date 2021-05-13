@@ -1,18 +1,24 @@
-import React, { useEffect } from 'react'
-import { Card, Col, Image, ListGroup, ListGroupItem, Row } from 'react-bootstrap'
+import React, { useEffect, useState } from 'react'
+import { Button, Card, Col, Image, ListGroup, ListGroupItem, Row } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
-import { getOrderDetails } from '../actions/orderActions'
+import { getOrderDetails, payOrder } from '../actions/orderActions'
+import { ORDER_PAY_RESET } from '../constants/orderConstants';
 
 const OrderScreen = ({ match }) => {
+    const [responseID, setresponseID] = useState('')
+
     const orderId = match.params.id
 
     const dispatch = useDispatch()
 
     const orderDetails = useSelector(state => state.orderDetails)
     const { order, loading, error } = orderDetails
+
+    const orderPay = useSelector(state => state.orderPay)
+    const { loading: loadingPay, success: successPay } = orderPay
 
     const getDeliveryDate = () => {
         const day = new Date()
@@ -25,12 +31,51 @@ const OrderScreen = ({ match }) => {
         return nextDay.toDateString()
     }
 
+
+    const PayByRazorPay = () => {
+        const options = {
+            key: 'rzp_test_AIjdrJ7gO1uFli',
+            amount: order.totalPrice * 100,
+            name: 'PROSHOP',
+            description: order._id,
+            image: 'https://cdn.razorpay.com/logos/7K3b6d18wHwKzL_medium.png',
+            handler: function(response) {
+                setresponseID(response.razorpay_payment_id)
+                // console.log("id_" + responseID)
+                dispatch(payOrder(order._id, responseID))
+            },
+            prefill: {
+                name: order.user.name,
+                email: order.user.email,
+            },
+        };
+
+        var rzp1 = new window.Razorpay(options);
+        rzp1.open();
+    
+    }
+
+
     useEffect(() => {
-        dispatch(getOrderDetails(orderId))
-    }, [dispatch, orderId])
+
+        const script = document.createElement('script');
+        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+        script.async = true;
+        document.body.appendChild(script);
+
+        if (!order || successPay) {
+            dispatch({ type: ORDER_PAY_RESET })
+            dispatch(getOrderDetails(orderId))
+        }
+        
+    }, [dispatch, orderId, order, successPay])
 
     const getEachItemTotal = (qty, price) => {
         return Number(qty * price).toFixed(2)
+    }
+
+    const getDate = (isoDate) => {
+        return new Date(isoDate).toDateString().split(' ').slice(1).join(' ')
     }
 
     return loading ? <Loader /> : error ? <Message variant='danger'>{error}</Message> : 
@@ -76,7 +121,7 @@ const OrderScreen = ({ match }) => {
                     <ListGroupItem>
                         <h4>3. Payment Method</h4>
                         {order.paymentMethod}
-                        {order.isPaid ? <Message variant='success'>Paid</Message> : <Message variant='warning'>Payment Pending</Message>}
+                        {order.isPaid ? <Message variant='success'>Paid at: {getDate(order.paidAt)}</Message> : <Message variant='warning'>Payment Pending</Message>}
                     </ListGroupItem>
                 </ListGroup>
             </Col>
@@ -129,6 +174,13 @@ const OrderScreen = ({ match }) => {
                                 <Col>₹{order.totalPrice}</Col>
                             </Row>
                         </ListGroupItem>
+
+                        {!order.isPaid &&                         
+                        <ListGroupItem>
+                            {loadingPay && <Loader />}
+                            <Button onClick={PayByRazorPay} block>Pay with Razorpay</Button>
+                        </ListGroupItem>
+                        }
 
                     </ListGroup>
                 </Card>

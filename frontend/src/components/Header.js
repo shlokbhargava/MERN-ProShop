@@ -37,7 +37,7 @@ const Header = () => {
                                 <NavDropdown title={userInfo.name} id="username">
                                     <NavDropdown.Item href="/profile"><i class="fas fa-user-circle"></i> Profile</NavDropdown.Item>
                                     <NavDropdown.Divider />
-                                    <NavDropdown.Item href="/"><i class="fas fa-box-open"></i> Orders</NavDropdown.Item>
+                                    <NavDropdown.Item href="/my-orders"><i class="fas fa-box-open"></i> Orders</NavDropdown.Item>
                                     {/* <NavDropdown.Item href="/"></NavDropdown.Item> */}
                                     <NavDropdown.Divider />
                                     <NavDropdown.Item onClick={() => logoutHandler()}><i class="fas fa-sign-out-alt"></i> Logout</NavDropdown.Item>

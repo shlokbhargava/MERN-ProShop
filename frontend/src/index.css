@@ -10,3 +10,7 @@ h1 {
 b {
     font-size: large;
 }
+
+h5 {
+    display: inline-block;
+}
