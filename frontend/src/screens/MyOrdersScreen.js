@@ -6,7 +6,7 @@ import { getMyOrders } from '../actions/orderActions'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 
-const MyOrdersScreen = () => {
+const MyOrdersScreen = ({ history }) => {
 
     const dispatch = useDispatch()
 
@@ -17,8 +17,12 @@ const MyOrdersScreen = () => {
     const { loading, error, orders } = myOrder
 
     useEffect(() => {
-        dispatch(getMyOrders(userInfo._id))
-    }, [dispatch, userInfo])
+        if (!userInfo) {
+            history.push('/login')
+        } else {
+            dispatch(getMyOrders()) 
+        }
+    }, [dispatch, history, userInfo])
 
     const getDate = (isoDate) => {
         return new Date(isoDate).toDateString().split(' ').slice(1).join(' ')
@@ -30,7 +34,8 @@ const MyOrdersScreen = () => {
         <Row>
             <h1 className='mb-4 ml-5'>Your Orders</h1>
             <Col md={{ span: 10, offset: 1 }}>
-               {orders.map((order) => (
+                {orders.length === 0 && <Message>You have no oredrs yet <Link to='/'> Continue Shopping <i className="fas fa-arrow-circle-right"></i></Link></Message>}
+               {orders.map(order => (
                    <>
                     {order.isPaid ? <h5 className='mb-0'><Badge variant="success">Paid</Badge></h5> : 
                     <h5 className='mb-0'><Badge variant="danger">Not Paid</Badge></h5>}
@@ -59,7 +64,7 @@ const MyOrdersScreen = () => {
                         </Card.Header>
                         <Card.Body>
                             <ListGroup variant='flush'>
-                                <ListGroupItem>
+                                <ListGroupItem key={order._id}>
                                     <ListGroup variant='flush'>
                                         {order.orderItems.map((item, index) => (
                                             <ListGroupItem key={index}>

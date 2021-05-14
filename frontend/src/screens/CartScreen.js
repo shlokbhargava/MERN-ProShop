@@ -46,7 +46,7 @@ const CartScreen = ({ match, location, history }) => {
                         <Alert.Heading>Get Free Delivery!</Alert.Heading>
                         <Message variant="dark">
                             Add items worth <b>₹{(500 - cartItems.reduce((acc, item) => acc + item.qty*item.price, 0).toFixed(2)).toFixed(2)}</b> more for free delivery 
-                            &nbsp;<Link to='/'> Add Items <i class="fas fa-arrow-circle-right"></i></Link>
+                            &nbsp;<Link to='/'> Add Items <i className="fas fa-arrow-circle-right"></i></Link>
                         </Message>
                     </Alert>
                 }
@@ -54,7 +54,7 @@ const CartScreen = ({ match, location, history }) => {
                 { cartItems.length === 0 ? 
                 <Message>
                     Your Cart is empty
-                    <Link to='/'> Continue Shopping <i class="fas fa-arrow-circle-right"></i></Link>
+                    <Link to='/'> Continue Shopping <i className="fas fa-arrow-circle-right"></i></Link>
                 </Message> : 
                 <ListGroup>
                     { cartItems.map(item => (
@@ -79,7 +79,7 @@ const CartScreen = ({ match, location, history }) => {
                                     </FormControl>
                                 </Col>
                                 <Col md={2}>
-                                    <Button variant="light" onClick={() => removeFromCartHandler(item.product)}> <i class="fas fa-trash"></i> </Button>
+                                    <Button variant="light" onClick={() => removeFromCartHandler(item.product)}> <i className="fas fa-trash"></i> </Button>
                                 </Col>
                             </Row>
                         </ListGroupItem>

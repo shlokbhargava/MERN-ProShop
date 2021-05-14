@@ -29,23 +29,31 @@ const Header = () => {
                         <Nav className="ml-auto">
                             <LinkContainer to="/cart">
                                 <Nav.Link>
-                                    <i class="fas fa-shopping-cart"></i> Cart 
+                                    <i className="fas fa-shopping-cart"></i> Cart 
                                     <Badge variant="dark">{cartItems.reduce((acc, item) => acc + item.qty, 0)}</Badge>
                                 </Nav.Link> 
                             </LinkContainer>
+                            {userInfo && userInfo.isAdmin && 
+                                <NavDropdown title='Admin Menu' id='adminmenu'>
+                                    <NavDropdown.Item href="/admin/userlist">Users</NavDropdown.Item>
+                                    <NavDropdown.Divider />
+                                    <NavDropdown.Item href="/admin/orderlist">Orders</NavDropdown.Item>
+                                    <NavDropdown.Divider />
+                                    <NavDropdown.Item href="/admin/productlist">Products</NavDropdown.Item>
+                                </NavDropdown>}
                             { userInfo ? (
                                 <NavDropdown title={userInfo.name} id="username">
-                                    <NavDropdown.Item href="/profile"><i class="fas fa-user-circle"></i> Profile</NavDropdown.Item>
+                                    <NavDropdown.Item href="/profile"><i className="fas fa-user-circle"></i> Profile</NavDropdown.Item>
                                     <NavDropdown.Divider />
-                                    <NavDropdown.Item href="/my-orders"><i class="fas fa-box-open"></i> Orders</NavDropdown.Item>
-                                    {/* <NavDropdown.Item href="/"></NavDropdown.Item> */}
+                                    {userInfo && !userInfo.isAdmin &&                                     <NavDropdown.Item href="/myorders"><i className="fas fa-box-open"></i> Orders</NavDropdown.Item>}
                                     <NavDropdown.Divider />
-                                    <NavDropdown.Item onClick={() => logoutHandler()}><i class="fas fa-sign-out-alt"></i> Logout</NavDropdown.Item>
+                                    <NavDropdown.Item onClick={() => logoutHandler()}><i className="fas fa-sign-out-alt"></i> Logout</NavDropdown.Item>
                                 </NavDropdown>
                             ) :
                             <LinkContainer to='/login'>
-                                <Nav.Link><i class="fas fa-sign-in-alt"></i> Sign In</Nav.Link>
-                            </LinkContainer> }
+                                <Nav.Link><i className="fas fa-sign-in-alt"></i> Sign In</Nav.Link>
+                            </LinkContainer> 
+                            }
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
