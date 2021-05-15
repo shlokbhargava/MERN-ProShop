@@ -57,14 +57,14 @@ const UserListScreen = ({ history }) => {
                                 <td><a href={`mailto:${user.email}`}>{user.email}</a></td>
                                 <td>{user.isAdmin ? <h5><Badge variant="success">Admin</Badge></h5> : <h5><Badge variant="danger">Not Admin</Badge></h5>}</td>
                                 <td>
-                                    <LinkContainer to={`/user/${user._id}/edit`}>
-                                        <OverlayTrigger key='top' placement='top' overlay={
-                                            <Tooltip id='top'>Edit</Tooltip>}>
-                                            <Button variant='light' size='sm'><i className="far fa-edit"></i></Button>
-                                        </OverlayTrigger>
-                                    </LinkContainer>
-                                    <OverlayTrigger key='top' placement='top' overlay={
-                                            <Tooltip id='top'>Delete</Tooltip>}>
+                                    <OverlayTrigger placement='top' overlay={
+                                        <Tooltip>Edit</Tooltip>}>
+                                            <LinkContainer to={`/admin/user/${user._id}/edit`}>
+                                                <Button variant='light' size='sm'><i className="far fa-edit"></i></Button>
+                                            </LinkContainer>
+                                    </OverlayTrigger>
+                                    <OverlayTrigger placement='top' overlay={
+                                        <Tooltip>Delete</Tooltip>}>
                                             <Button variant='danger' size='sm' onClick={() => deleteHandler(user._id)}><i className="fas fa-trash"></i></Button>
                                     </OverlayTrigger>
                                 </td>
