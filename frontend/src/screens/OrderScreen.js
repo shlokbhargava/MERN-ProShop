@@ -35,7 +35,7 @@ const OrderScreen = ({ match }) => {
     const PayByRazorPay = () => {
         const options = {
             key: 'rzp_test_AIjdrJ7gO1uFli',
-            amount: order.totalPrice * 100,
+            amount: Number(order.totalPrice) * 100,
             name: 'PROSHOP',
             description: order._id,
             image: 'https://cdn.razorpay.com/logos/7K3b6d18wHwKzL_medium.png',

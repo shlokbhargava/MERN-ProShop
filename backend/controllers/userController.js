@@ -121,7 +121,7 @@ export const getUsers = asyncHandler(async (req, res) => {
 
     res.json(users)
 })
-
+ 
 
 // @desc     Delete user
 // @route    DELETE /api/users/:id
