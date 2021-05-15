@@ -4,7 +4,8 @@ import { LinkContainer } from 'react-router-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
-import { deleteProduct, listProducts } from '../actions/productActions'
+import { createProduct, deleteProduct, listProducts } from '../actions/productActions'
+import { PRODUCT_CREATE_RESET } from '../constants/productConstants'
 
 const ProductListScreen = ({ history }) => {
 
@@ -16,18 +17,27 @@ const ProductListScreen = ({ history }) => {
     const productDelete = useSelector(state => state.productDelete)
     const { loading: loadingDelete, error: errorDelete, success: successDelete } = productDelete
 
+    const productCreate = useSelector(state => state.productCreate)
+    const { loading: loadingCreate, error: errorCreate, success: successCreate, product: createdProduct } = productCreate
+
     const userLogin = useSelector(state => state.userLogin)
     const { userInfo } = userLogin
 
     useEffect(() => {
+        dispatch({ type: PRODUCT_CREATE_RESET })
+
         if (!userInfo) {
             history.push('/login')
-        } else if (userInfo && userInfo.isAdmin) {
-            dispatch(listProducts())
-        } else {
-            history.push('/login')
         }
-    }, [dispatch, userInfo, history, successDelete])
+        else if (!userInfo.isAdmin) {
+            history.push('/login')
+        } 
+        if (successCreate) {
+            history.push(`/admin/product/${createdProduct._id}/edit`)
+        } else {
+            dispatch(listProducts())
+        }
+    }, [dispatch, userInfo, history, successDelete, successCreate, createdProduct])
 
     const deleteHandler = (id) => {
         if (window.confirm('Are you sure you want to delete the user')) {
@@ -36,7 +46,7 @@ const ProductListScreen = ({ history }) => {
     }
 
     const createProductHandler = () => {
-
+        dispatch(createProduct())
     }
 
     return (
@@ -46,11 +56,13 @@ const ProductListScreen = ({ history }) => {
                     <h1>Products</h1>
                 </Col>
                 <Col className='text-right'>
-                    <Button className='my-2' onClick={createProductHandler()}><i className="fas fa-plus"></i> Create Product</Button>
+                    <Button className='my-2' onClick={createProductHandler}><i className="fas fa-plus"></i> Create Product</Button>
                 </Col>
             </Row>
             {loadingDelete && <Loader />}
             {errorDelete && <Message variant='danger'>{errorDelete}</Message>}
+            {loadingCreate && <Loader />}
+            {errorCreate && <Message variant='danger'>{errorCreate}</Message>}
             {loading ? <Loader /> : error ? <Message variant='danger'>{error}</Message> : (
                 <Table striped bordered hover responsive className='table-sm'>
                     <thead>
@@ -74,7 +86,7 @@ const ProductListScreen = ({ history }) => {
                                 <td>₹{product.price}</td>
                                 <td>{product.category}</td>
                                 <td>{product.brand}</td>
-                                <td>
+                                <td style={{ display: 'inline-block' }}>
                                     <OverlayTrigger placement='top' overlay={
                                         <Tooltip>Edit</Tooltip>}>
                                             <LinkContainer to={`/admin/product/${product._id}/edit`}>
