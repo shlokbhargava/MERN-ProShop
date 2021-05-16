@@ -4,21 +4,27 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
-import { getOrderDetails, payOrder } from '../actions/orderActions'
-import { ORDER_PAY_RESET } from '../constants/orderConstants';
+import { deliverOrder, getOrderDetails, payOrder } from '../actions/orderActions'
+import { ORDER_DELIVER_RESET, ORDER_PAY_RESET } from '../constants/orderConstants';
 
-const OrderScreen = ({ match }) => {
+const OrderScreen = ({ match, history }) => {
     const [responseID, setresponseID] = useState('')
 
     const orderId = match.params.id
 
     const dispatch = useDispatch()
 
+    const userLogin = useSelector(state => state.userLogin)
+    const { userInfo } = userLogin
+
     const orderDetails = useSelector(state => state.orderDetails)
     const { order, loading, error } = orderDetails
 
     const orderPay = useSelector(state => state.orderPay)
     const { loading: loadingPay, success: successPay } = orderPay
+
+    const orderDeliver = useSelector(state => state.orderDeliver)
+    const { loading: loadingDeliver, success: successDeliver } = orderDeliver
 
     const getDeliveryDate = () => {
         const day = new Date()
@@ -57,18 +63,22 @@ const OrderScreen = ({ match }) => {
 
 
     useEffect(() => {
+        if (!userInfo) {
+            history.push('/login')
+        }
 
         const script = document.createElement('script');
         script.src = 'https://checkout.razorpay.com/v1/checkout.js';
         script.async = true;
         document.body.appendChild(script);
 
-        if (!order || successPay) {
+        if (!order || successPay || successDeliver) {
             dispatch({ type: ORDER_PAY_RESET })
+            dispatch({ type: ORDER_DELIVER_RESET })
             dispatch(getOrderDetails(orderId))
         }
         
-    }, [dispatch, orderId, order, successPay])
+    }, [dispatch, history, userInfo, orderId, order, successPay, successDeliver])
 
     const getEachItemTotal = (qty, price) => {
         return Number(qty * price).toFixed(2)
@@ -76,6 +86,10 @@ const OrderScreen = ({ match }) => {
 
     const getDate = (isoDate) => {
         return new Date(isoDate).toDateString().split(' ').slice(1).join(' ')
+    }
+
+    const deliverHandler = () => {
+        dispatch(deliverOrder(order))
     }
 
     return loading ? <Loader /> : error ? <Message variant='danger'>{error}</Message> : 
@@ -107,6 +121,8 @@ const OrderScreen = ({ match }) => {
                                 ))}
                             </ListGroup>
                         )}
+
+                        {!order.isDelivered ? <Message variant='danger'>Not Delivered</Message> : <Message variant='success'>Delivered at: {getDate(order.deliveredAt)}</Message>}
                     </ListGroupItem>
 
                     <ListGroupItem>
@@ -181,6 +197,14 @@ const OrderScreen = ({ match }) => {
                             <Button onClick={PayByRazorPay} block>Pay with Razorpay</Button>
                         </ListGroupItem>
                         }
+
+                        {loadingDeliver && <Loader />}
+
+                        {userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (
+                            <ListGroupItem>
+                                <Button type='button' className='btn btn-block' onClick={deliverHandler}>Mark As Delivered</Button>
+                            </ListGroupItem>
+                        )}
 
                     </ListGroup>
                 </Card>

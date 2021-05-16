@@ -39,8 +39,8 @@ const MyOrdersScreen = ({ history }) => {
                    <>
                     {order.isPaid ? <h5 className='mb-0'><Badge variant="success">Paid</Badge></h5> : 
                     <h5 className='mb-0'><Badge variant="danger">Not Paid</Badge><Link to={`/order/${order._id}`}> Pay Now <i className="fas fa-arrow-right"></i></Link></h5>}
-                    {order.isDelivered && <h5 className='mb-0'><Badge variant="success">Delivered</Badge></h5>}
-                    <Card className='mb-5' border={order.isPaid && order.isDelivered? 'success' : ''}>
+                    &nbsp;{order.isDelivered && <h5 className='mb-0'><Badge variant="success">Delivered</Badge></h5>}
+                    <Card className='mb-5' border={order.isPaid && order.isDelivered ? 'success' : !order.isPaid && !order.isDelivered ? 'danger' : ''}>
                         <Card.Header>
                             <Row>
                                 <Col md={3}>
@@ -53,7 +53,7 @@ const MyOrdersScreen = ({ history }) => {
                                 </Col>
                                 <Col md={2}>
                                     <strong>DELIVERED AT</strong> <br></br>
-                                    {order.isDelivered ? order.deliveredAt : !order.isPaid ? <h5 className='mb-0'><Badge variant="danger">Not Paid</Badge></h5> : 
+                                    {order.isDelivered ? getDate(order.deliveredAt) : !order.isPaid ? <h5 className='mb-0'><Badge variant="danger">Not Paid</Badge></h5> : 
                                     <h5><Badge variant="danger">Not Delivered</Badge></h5>}
                                 </Col>
                                 <Col className="text-right">
