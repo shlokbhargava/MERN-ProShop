@@ -68,7 +68,7 @@ const MyOrdersScreen = ({ history }) => {
                                     <ListGroup variant='flush'>
                                         {order.orderItems.map((item, index) => (
                                             <ListGroupItem key={index}>
-                                                <Row>
+                                                <Row>   
                                                     <Col md={2}>
                                                         <Image src={item.image} alt={item.name} fluid thumbnail />
                                                     </Col>
@@ -76,7 +76,12 @@ const MyOrdersScreen = ({ history }) => {
                                                         <Link to={`/product/${item.product}`}>{item.name}</Link>
                                                         <p></p>
                                                         <Link to={`/product/${item.product}`}>
-                                                            <Button size="sm"><i className="fas fa-sync-alt"></i> &nbsp; Buy It Again</Button>
+                                                            <Button className="btn-primary" size="sm"><i className="fas fa-sync-alt"></i> &nbsp; Buy It Again</Button>
+                                                        </Link>
+                                                    </Col>
+                                                    <Col className='py-3' md={3}>
+                                                        <Link to={`/product/${item.product}`}>
+                                                            <Button size='sm'>Write a Product Review</Button>
                                                         </Link>
                                                     </Col>
                                                 </Row>
