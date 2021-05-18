@@ -18,3 +18,13 @@ h5 {
 .comment {
     color: black;
 }
+
+.carousel-caption {
+    top: 35%;
+    left: 5%;
+    bottom: auto;
+}
+
+.carousel-caption h2 {
+    color: white;
+}

@@ -3,6 +3,7 @@ import { Form, Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
+import Meta from '../components/Meta'
 import FormContainer from '../components/FormContainer'
 import { getUserDetails, updateUserProfile } from '../actions/userActions'
 
@@ -58,6 +59,7 @@ const ProfileScreen = ({ location, history }) => {
             {error && <Message variant='danger'>{error}</Message>}
             {success && <Message variant='success'>Profile Updated</Message>}
             {loading && <Loader />}
+            <Meta title={`Profile | ${name}`} />
             <Form onSubmit={submitHandler}> 
                 <Form.Group controlId='name'>
                     <Form.Label>Name</Form.Label>

@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler'
 import Order from '../models/orderModel.js'
+import Product from '../models/productModel.js'
 
 // @desc     Create new Order
 // @route    POST /api/orders
@@ -47,9 +48,17 @@ export const getOrderById = asyncHandler(async (req, res) => {
 // @route    PUT /api/orders/:id/pay
 // @access   Private
 export const updateOrderToPaid = asyncHandler(async (req, res) => {
+
     const order = await Order.findById(req.params.id)
 
     if (order) {
+
+        order.orderItems.map(async(item) => {
+            const prod = await Product.findById(item.product)
+            prod.countInStock = prod.countInStock - item.qty
+            await prod.save()
+        })
+
         order.isPaid = true,
         order.paidAt = Date.now()
         order.paymentId = req.body.id
@@ -87,9 +96,14 @@ export const updateOrderToDelivered = asyncHandler(async (req, res) => {
 // @route    GET /api/orders/my-orders
 // @access   Private
 export const getMyOrders = asyncHandler(async (req, res) => {
-    const orders = await Order.find({ user: req.params.id })
+    const pageSize = 2
+    const page = Number(req.query.pageNumber) || 1
 
-    res.json(orders)
+    const allOrder = await Order.find({ user: req.params.id })
+    const count = allOrder.length
+
+    const orders = await Order.find({ user: req.params.id }).limit(pageSize).skip(pageSize * (page-1))
+    res.json({ orders, page, pages: Math.ceil(count / pageSize) })
 })
 
 

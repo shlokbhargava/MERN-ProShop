@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import Paginate from '../components/Paginate'
+import Meta from '../components/Meta'
+import { getStringPrice } from '../utility'
 import { createProduct, deleteProduct, listProducts } from '../actions/productActions'
 import { PRODUCT_CREATE_RESET } from '../constants/productConstants'
 
@@ -67,6 +69,7 @@ const ProductListScreen = ({ history, match }) => {
             {errorCreate && <Message variant='danger'>{errorCreate}</Message>}
             {loading ? <Loader /> : error ? <Message variant='danger'>{error}</Message> : (
                 <>
+                    <Meta title='Admin | Products' />
                     <Table striped bordered hover responsive className='table-sm'>
                         <thead>
                             <tr>
@@ -74,7 +77,6 @@ const ProductListScreen = ({ history, match }) => {
                                 <th>NAME</th>
                                 <th className='text-center'>QUANTITY</th>
                                 <th>PRICE</th>
-                                <th>CATEGORY</th>
                                 <th>BRAND</th>
                                 <th></th>
                             </tr>
@@ -86,8 +88,7 @@ const ProductListScreen = ({ history, match }) => {
                                     <td>{product.name}</td>
                                     <td className='text-center'>{product.countInStock > 0 ? product.countInStock : 
                                         <h5><Badge variant="danger">Out Of Stock</Badge></h5>}</td>
-                                    <td>₹{product.price}</td>
-                                    <td>{product.category}</td>
+                                    <td>₹{getStringPrice(product.price)}</td>
                                     <td>{product.brand}</td>
                                     <td style={{ display: 'inline-block' }}>
                                         <OverlayTrigger placement='top' overlay={

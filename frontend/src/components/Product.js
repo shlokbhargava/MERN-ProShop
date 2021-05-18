@@ -2,12 +2,14 @@ import React from 'react'
 import { Card } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import Rating from './Rating'
+import { getStringPrice } from '../utility'
 
 const Product = ({ product }) => {
+
     return (
         <Card className="my-3 p-3 rounded">
             <Link to={`/product/${product._id}`}>
-                <Card.Img src={product.image} variant='top' />
+                <Card.Img src={product.image} variant='top' style={{ height: '22vh' }} />
             </Link>
 
             <Card.Body>
@@ -22,7 +24,7 @@ const Product = ({ product }) => {
                 </Card.Text>
 
                 <Card.Text>
-                    <h3>₹{product.price}</h3>
+                    <h3><small>₹</small>{getStringPrice(product.price)}</h3>
                 </Card.Text>
             </Card.Body>
         </Card>

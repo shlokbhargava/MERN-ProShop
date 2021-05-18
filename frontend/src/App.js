@@ -37,7 +37,8 @@ function App() {
           <Route path="/payment" component={PaymentScreen} />
           <Route path='/placeorder' component={PlaceOrderScreen} />
           <Route path='/order/:id' component={OrderScreen} />
-          <Route path='/myorders' component={MyOrdersScreen} />
+          <Route path='/myorders' component={MyOrdersScreen} exact/>
+          <Route path='/myorders/:pageNumber' component={MyOrdersScreen} exact/>
           <Route path='/admin/orderlist' component={OrderListScreen} />
           <Route path='/admin/userlist' component={UserListScreen} />
           <Route path='/admin/user/:id/edit' component={UserEditScreen} />

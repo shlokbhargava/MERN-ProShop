@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Row, Col, ListGroup, Image, Button, Card, ListGroupItem, FormControl, Alert } from 'react-bootstrap'
 import Message from '../components/Message'
+import Meta from '../components/Meta'
+import { getStringPrice, getDeliveryDate } from '../utility'
 import { addToCart, removeFromCart } from '../actions/cartActions'
 
 const CartScreen = ({ match, location, history }) => {
@@ -30,18 +32,12 @@ const CartScreen = ({ match, location, history }) => {
         history.push('/login?redirect=shipping' )
     }
 
-    const getDeliveryDate = () => {
-        const day = new Date()
-        const nextDay = new Date(day)
-        nextDay.setDate(day.getDate() + 3)
-        return nextDay.toDateString()
-    }
-
     return (
         <Row>
+            <Meta title='Cart' />
             <Col md={8}>
                 { 
-                    cartItems.reduce((acc, item) => acc + item.qty*item.price, 0).toFixed(3) >= 500 ? "" : cartItems.length === 0 ? "" : 
+                    cartItems.reduce((acc, item) => acc + item.qty*item.price, 0) >= 500 ? "" : cartItems.length === 0 ? "" : 
                     <Alert variant="dark">
                         <Alert.Heading>Get Free Delivery!</Alert.Heading>
                         <Message variant="dark">
@@ -67,7 +63,7 @@ const CartScreen = ({ match, location, history }) => {
                                     <Link to={`/product/${item.product}`}>{item.name}</Link>
                                 </Col>
                                 <Col md={2}>
-                                    ₹{item.price}
+                                    ₹{getStringPrice(item.price)}
                                 </Col>
                                 <Col md={2}>
                                     <FormControl as='select' value={item.qty} onChange={(e) => dispatch(addToCart(item.product, Number(e.target.value)))}>
@@ -93,7 +89,7 @@ const CartScreen = ({ match, location, history }) => {
                 <br></br>
                 <Card>
                     <ListGroup variant='flush'>
-                        <Card.Header as='h5'><b>Cart total : ₹{ cartItems.reduce((acc, item) => acc + item.qty*item.price, 0).toFixed(2) }</b>
+                        <Card.Header as='h5'><b>Cart total : ₹{ getStringPrice(cartItems.reduce((acc, item) => acc + item.qty*item.price, 0)) }</b>
                         </Card.Header>
                         <ListGroupItem>
                             <Row>
@@ -104,13 +100,13 @@ const CartScreen = ({ match, location, history }) => {
                         <ListGroupItem>
                             <Row>
                                 <Col>Shipping Charges : </Col>
-                                <Col>{ cartItems.reduce((acc, item) => acc + item.qty*item.price, 0).toFixed(2) >= 500 ? "FREE" : cartItems.length === 0 ? "" : "₹50.00"}</Col>
+                                <Col>{ cartItems.reduce((acc, item) => acc + item.qty*item.price, 0) >= 500 ? "FREE" : cartItems.length === 0 ? "" : "₹50.00"}</Col>
                             </Row>
                         </ListGroupItem>
                         <ListGroupItem>
                             <Row>
                                 <Col>Delivery By : </Col>
-                                <Col>{cartItems.length === 0 ? "" : getDeliveryDate()}</Col>
+                                <Col>{cartItems.length === 0 ? "" : getDeliveryDate(3)}</Col>
                             </Row>
                         </ListGroupItem>
                         <ListGroupItem>

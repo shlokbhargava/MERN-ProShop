@@ -120,7 +120,7 @@ export const deliverOrder = (order) => async (dispatch, getState) => {
 }
 
 
-export const getMyOrders = () => async (dispatch, getState) => {
+export const getMyOrders = (pageNumber) => async (dispatch, getState) => {
     try {
         dispatch({
             type: MY_ORDERS_REQUEST,
@@ -134,7 +134,7 @@ export const getMyOrders = () => async (dispatch, getState) => {
             }
         }
 
-        const { data } = await axios.get(`/api/orders/myorders/${userInfo._id}`, config)
+        const { data } = await axios.get(`/api/orders/myorders/${userInfo._id}?pageNumber=${pageNumber}`, config)
 
         dispatch({
             type: MY_ORDERS_SUCCESS,

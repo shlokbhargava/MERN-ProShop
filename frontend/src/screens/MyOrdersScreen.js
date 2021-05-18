@@ -1,12 +1,16 @@
 import React, { useEffect } from 'react'
-import {  Badge, Button, Card, Col, Image, ListGroup, ListGroupItem, Nav, Row } from 'react-bootstrap'
+import {  Badge, Button, Card, Col, Image, ListGroup, ListGroupItem, Nav, PageItem, Pagination, Row } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
+import { LinkContainer } from 'react-router-bootstrap'
 import { Link } from 'react-router-dom'
 import { getMyOrders } from '../actions/orderActions'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
+import Meta from '../components/Meta'
+import { getStringPrice, getDate } from '../utility'
 
-const MyOrdersScreen = ({ history }) => {
+const MyOrdersScreen = ({ history, match }) => {
+    const pageNumber = match.params.pageNumber || 1
 
     const dispatch = useDispatch()
 
@@ -14,23 +18,20 @@ const MyOrdersScreen = ({ history }) => {
     const { userInfo } = userLogin
 
     const myOrder = useSelector(state => state.myOrder)
-    const { loading, error, orders } = myOrder
+    const { loading, error, orders, pages, page } = myOrder
 
     useEffect(() => {
         if (!userInfo) {
             history.push('/login')
         } else {
-            dispatch(getMyOrders()) 
+            dispatch(getMyOrders(pageNumber)) 
         }
-    }, [dispatch, history, userInfo])
-
-    const getDate = (isoDate) => {
-        return new Date(isoDate).toDateString().split(' ').slice(1).join(' ')
-    }
+    }, [dispatch, history, userInfo, pageNumber])
 
     return loading ? <Loader /> : error ? <Message variant='danger'>{error}</Message> : 
 
     <>
+        <Meta title='My Orders' />
         <Row>
             <h1 className='mb-4 ml-5'>Your Orders</h1>
             <Col md={{ span: 10, offset: 1 }}>
@@ -49,7 +50,7 @@ const MyOrdersScreen = ({ history }) => {
                                 </Col>
                                 <Col md={2}>
                                     <strong>TOTAL</strong> <br></br>
-                                    ₹{order.totalPrice}
+                                    ₹{getStringPrice(order.totalPrice)}
                                 </Col>
                                 <Col md={2}>
                                     <strong>DELIVERED AT</strong> <br></br>
@@ -76,12 +77,12 @@ const MyOrdersScreen = ({ history }) => {
                                                         <Link to={`/product/${item.product}`}>{item.name}</Link>
                                                         <p></p>
                                                         <Link to={`/product/${item.product}`}>
-                                                            <Button className="btn-primary" size="sm"><i className="fas fa-sync-alt"></i> &nbsp; Buy It Again</Button>
+                                                            <Button variant="outline-warning" size="sm"><i className="fas fa-sync-alt"></i> &nbsp; Buy It Again</Button>
                                                         </Link>
                                                     </Col>
                                                     <Col className='py-3' md={3}>
                                                         <Link to={`/product/${item.product}`}>
-                                                            <Button size='sm'>Write a Product Review</Button>
+                                                            <Button variant="outline-dark" size='sm'>Write a Product Review</Button>
                                                         </Link>
                                                     </Col>
                                                 </Row>
@@ -95,7 +96,18 @@ const MyOrdersScreen = ({ history }) => {
                    </>
                ))}
             </Col>
-        </Row>   
+        </Row> 
+        {pages > 1 && (
+            <Row className='justify-content-center'>
+                <Pagination>
+                    {[...Array(pages).keys()].map(x => (
+                        <LinkContainer key={x+1} to={`/myorders/${x+1}`}>
+                            <PageItem active={x+1 === page}>{x+1}</PageItem>
+                        </LinkContainer>
+                    ))}
+                </Pagination>
+            </Row>
+        )}  
     </>
 }
 

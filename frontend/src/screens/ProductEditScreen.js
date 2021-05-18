@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
+import Meta from '../components/Meta'
 import FormContainer from '../components/FormContainer'
 import { listProductDetails, updateProduct } from '../actions/productActions'
 import { PRODUCT_UPDATE_RESET } from '../constants/productConstants'
@@ -96,6 +97,8 @@ const ProductEditScreen = ({ match, history }) => {
                 {loadingUpdate && <Loader />}
                 {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
                 {loading ? <Loader /> : error ? <Message variant='danger'>{error}</Message> : (
+                <>
+                    <Meta title={`Admin | Edit ${product.name}`} />
                     <Form onSubmit={submitHandler}> 
                         <Form.Group controlId='name'>
                             <Form.Label>Name</Form.Label>
@@ -138,6 +141,7 @@ const ProductEditScreen = ({ match, history }) => {
                             Update
                         </Button>
                     </Form>
+                </>
                 )}
             </FormContainer>
         </>

@@ -4,6 +4,8 @@ import { LinkContainer } from 'react-router-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
+import Meta from '../components/Meta'
+import { getStringPrice, getDate } from '../utility'
 import { listOrders } from '../actions/orderActions'
 
 const OrderListScreen = ({ history }) => {
@@ -30,53 +32,48 @@ const OrderListScreen = ({ history }) => {
         }
     }, [dispatch, userInfo, history])
 
-    const getDate = (isoDate) => {
-        return new Date(isoDate).toDateString().split(' ').slice(1).join(' ')
-    }
-
     return (
         <>  
             <h1>Orders</h1>
-            {/* {loadingDelete && <Loader />}
-            {errorDelete && <Message variant='danger'>{errorDelete}</Message>}
-            {loadingCreate && <Loader />}
-            {errorCreate && <Message variant='danger'>{errorCreate}</Message>} */}
             {loading ? <Loader /> : error ? <Message variant='danger'>{error}</Message> : (
-                <Table striped bordered hover responsive className='table-sm'>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>USER</th>
-                            <th>DATE</th>
-                            <th>TOTAL</th>
-                            <th>DELIVERY</th>
-                            <th>PAYMENT METHOD</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {orders.map(order => (
-                            (order.isPaid && 
-                                <tr key={order._id}>
-                                    <td>{order._id}</td>
-                                    <td>{order.user && order.user.name}</td>
-                                    <td>{getDate(order.createdAt)}</td>
-                                    <td>₹{order.totalPrice}</td>
-                                    <td>{order.isDelivered ? <h5 className='mb-0'><Badge variant="success">Delivered</Badge>
-                                    </h5> : <h5 className='mb-0'><Badge variant="danger">Not Delivered</Badge></h5>}</td>
-                                    <td>{order.paymentMethod}</td>
-                                    <td>
-                                        <LinkContainer to={`/order/${order._id}`}>
-                                            <Button variant='light' size='sm'>
-                                                View
-                                            </Button>
-                                        </LinkContainer>
-                                    </td>
-                                </tr>
-                            )
-                        ))}
-                    </tbody>
-                </Table>  
+                <>
+                    <Meta title='Admin | Orders' />
+                    <Table striped bordered hover responsive className='table-sm'>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>USER</th>
+                                <th>DATE</th>
+                                <th>TOTAL</th>
+                                <th>DELIVERY</th>
+                                <th>PAYMENT METHOD</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {orders.map(order => (
+                                (order.isPaid && 
+                                    <tr key={order._id}>
+                                        <td>{order._id}</td>
+                                        <td>{order.user && order.user.name}</td>
+                                        <td>{getDate(order.createdAt)}</td>
+                                        <td>₹{getStringPrice(order.totalPrice)}</td>
+                                        <td>{order.isDelivered ? <h5 className='mb-0'><Badge variant="success">Delivered</Badge>
+                                        </h5> : <h5 className='mb-0'><Badge variant="danger">Not Delivered</Badge></h5>}</td>
+                                        <td>{order.paymentMethod}</td>
+                                        <td>
+                                            <LinkContainer to={`/order/${order._id}`}>
+                                                <Button variant='light' size='sm'>
+                                                    View
+                                                </Button>
+                                            </LinkContainer>
+                                        </td>
+                                    </tr>
+                                )
+                            ))}
+                        </tbody>
+                    </Table>  
+                </>
             )}
         </>
     )

@@ -1,17 +1,23 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { Row, Col, Image, ListGroup, Button, ListGroupItem, Form } from 'react-bootstrap'
+import { Row, Col, Image, ListGroup, Button, ListGroupItem, Form, Modal } from 'react-bootstrap'
 import Rating from '../components/Rating'
 import { createProductReview, listProductDetails } from '../actions/productActions'
 import Spinner from '../components/Loader'
 import Message from '../components/Message'
+import Meta from '../components/Meta'
+import { getStringPrice, getDate } from '../utility'
 import { PRODUCT_CREATE_REVIEW_RESET } from '../constants/productConstants'
 
 const ProductScreen = ({history, match}) => {
     const [qty, setQty] = useState(1)
     const [rating, setRating] = useState(0)
     const [comment, setComment] = useState('')
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
     const dispatch = useDispatch()
 
@@ -46,10 +52,6 @@ const ProductScreen = ({history, match}) => {
         }))
     }
 
-    const getDate = (isoDate) => {
-        return new Date(isoDate).toDateString().split(' ').slice(1).join(' ')
-    }
-
     return (
         <>
             <Link className='btn btn-light my-2' to='/'>
@@ -58,9 +60,15 @@ const ProductScreen = ({history, match}) => {
 
             { loading ?  <Spinner /> : error ? <Message variant='danger'>{error}</Message> : 
             <>
+                <Meta title={product.name} />
                 <Row>
                     <Col md={5}>
-                        <Image src={product.image} alt={product.name} fluid />
+                        <Image src={product.image} alt={product.name} onClick={handleShow} fluid />
+                        <Modal show={show} onHide={handleClose} size="lg" centered>
+                            <Modal.Body>
+                                <Image src={product.image} alt={product.name} fluid />
+                            </Modal.Body>
+                        </Modal>
                     </Col>
 
                     <Col md={4}>
@@ -72,7 +80,7 @@ const ProductScreen = ({history, match}) => {
                                 <Rating value={product.rating} text={`${product.numReviews} reviews`} />
                             </ListGroup.Item>
                             <ListGroup.Item>
-                                Price: ₹{product.price} 
+                                Price: ₹{getStringPrice(product.price)} 
                             </ListGroup.Item>
                             <ListGroupItem>
                                 <h6>Description:</h6> {product.description}
@@ -86,7 +94,7 @@ const ProductScreen = ({history, match}) => {
                                     Price:
                                 </Col>
                                 <Col>
-                                    ₹{product.price}
+                                    ₹{getStringPrice(product.price)}
                                 </Col>
                             </Row> 
                         </ListGroupItem>
