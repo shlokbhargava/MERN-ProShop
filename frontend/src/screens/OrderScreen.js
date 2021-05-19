@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Button, Card, Col, Image, ListGroup, ListGroupItem, Row } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
@@ -8,9 +8,9 @@ import Meta from '../components/Meta'
 import { getStringPrice, getDeliveryDate, getDate } from '../utility'
 import { deliverOrder, getOrderDetails, payOrder } from '../actions/orderActions'
 import { ORDER_DELIVER_RESET, ORDER_PAY_RESET } from '../constants/orderConstants';
+import axios from 'axios'
 
-const OrderScreen = ({ match, history }) => {
-    const [responseID, setresponseID] = useState('')
+const OrderScreen = ({ match, history, location }) => {
 
     const orderId = match.params.id
 
@@ -36,20 +36,17 @@ const OrderScreen = ({ match, history }) => {
         }
     }
 
+    const PayByRazorPay = async() => {
+        const { data: key } = await axios.get('/api/config/razorpay')
 
-    const PayByRazorPay = () => {
         const options = {
-            key: 'rzp_test_AIjdrJ7gO1uFli',
+            key: key,
             amount: order.totalPrice * 100,
             name: 'PROSHOP',
             description: order._id,
             image: 'https://cdn.razorpay.com/logos/7K3b6d18wHwKzL_medium.png',
             handler: function(response) {
-                alert(response.razorpay_payment_id);
-                alert(response.razorpay_order_id);
-                alert(response.razorpay_signature);
-                setresponseID(response.razorpay_payment_id)
-                // console.log("id_" + responseID)
+                const responseID = response.razorpay_payment_id
                 dispatch(payOrder(order._id, responseID))
             },
             prefill: {
@@ -80,8 +77,12 @@ const OrderScreen = ({ match, history }) => {
             dispatch({ type: ORDER_DELIVER_RESET })
             dispatch(getOrderDetails(orderId))
         }
+
+        if (successPay) {
+            window.location.reload()
+        }
         
-    }, [dispatch, history, userInfo, orderId, order, successPay, successDeliver])
+    }, [dispatch, history, location, userInfo, orderId, order, successPay, successDeliver])
 
     const getEachItemTotal = (qty, price) => {
         return Number(qty * price)
@@ -161,13 +162,7 @@ const OrderScreen = ({ match, history }) => {
                                 </Row>
                             </ListGroupItem>
                         }
-                        {/* <ListGroupItem>
-                            <Row>
-                                <Col>Shipping : </Col>
-                                <Col>₹{cart.shippingPrice}</Col>
-                            </Row>
-                        </ListGroupItem> */}
-
+                        
                         {order.fastDeliveryPrice === 100 && 
                             <ListGroupItem>
                                 <Row>

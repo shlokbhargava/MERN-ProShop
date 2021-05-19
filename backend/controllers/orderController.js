@@ -49,6 +49,8 @@ export const getOrderById = asyncHandler(async (req, res) => {
 // @access   Private
 export const updateOrderToPaid = asyncHandler(async (req, res) => {
 
+    const { id } = req.body
+
     const order = await Order.findById(req.params.id)
 
     if (order) {
@@ -61,7 +63,7 @@ export const updateOrderToPaid = asyncHandler(async (req, res) => {
 
         order.isPaid = true,
         order.paidAt = Date.now()
-        order.paymentId = req.body.id
+        order.paymentId = id
 
         const updatedOrder = await order.save()
 

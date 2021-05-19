@@ -29,7 +29,7 @@ const PlaceOrderScreen = ({ history }) => {
     cart.itemPrice = Number(cartItems.reduce((acc, item) => acc + item.qty*item.price, 0)) 
     cart.shippingPrice = Number(cart.itemPrice > 500 ? 0 : !show ? 0 : 50) 
     cart.fastDeliveryPrice = Number(!show ? 100 : 0)
-    cart.taxPrice = (0.18 * Number(cart.itemPrice))
+    cart.taxPrice = Math.ceil(0.18 * Number(cart.itemPrice))
     cart.totalPrice = (Number(cart.itemPrice) + Number(cart.shippingPrice) + Number(cart.taxPrice) + Number(cart.fastDeliveryPrice))
 
 

@@ -27,6 +27,8 @@ app.use('/api/users', userRoutes)
 app.use('/api/orders', orderRoutes)
 app.use('/api/upload', uploadRoutes)
 
+app.get('/api/config/razorpay', (req, res) => res.send(process.env.RAZORPAY_SECRET))
+
 const __dirname = path.resolve()
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')))
 

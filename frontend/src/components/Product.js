@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card } from 'react-bootstrap'
+import { Badge, Card } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import Rating from './Rating'
 import { getStringPrice } from '../utility'
@@ -8,6 +8,7 @@ const Product = ({ product }) => {
 
     return (
         <Card className="my-3 p-3 rounded">
+            {product.countInStock === 1 ? <Badge variant='warning'>Only 1 left in stock</Badge> : product.countInStock === 0 && <Badge variant='danger'>Out of stock</Badge>}
             <Link to={`/product/${product._id}`}>
                 <Card.Img src={product.image} variant='top' style={{ height: '22vh' }} />
             </Link>

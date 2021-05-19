@@ -25,7 +25,7 @@ const ProductScreen = ({history, match}) => {
     const { loading, error, product } = productDetails
 
     const productReviewCreate = useSelector(state => state.productReviewCreate)
-    const { error: errorProductReciew, success: successProductReview } = productReviewCreate
+    const { error: errorProductReview, success: successProductReview } = productReviewCreate
 
     const userLogin = useSelector(state => state.userLogin)
     const { userInfo } = userLogin
@@ -147,7 +147,7 @@ const ProductScreen = ({history, match}) => {
 
                         <ListGroup variant='flush'>
                             <h4>Review this product</h4>
-                            {errorProductReciew && <Message variant='danger'>{errorProductReciew}</Message>}
+                            {errorProductReview && <Message variant='danger'>{errorProductReview}</Message>}
                             <ListGroupItem>
                                 {!userInfo ? <Link to='/login'><Button>Write a review</Button></Link> : (
                                     <Form onSubmit={submitHandler}>
