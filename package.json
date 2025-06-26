@@ -13,6 +13,9 @@
     "data:destroy": "node backend/seeder -d",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend"
   },
+  "engines": {
+    "node": ">=16.20.1"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shlokbhargava/MERN-ProShop.git"
