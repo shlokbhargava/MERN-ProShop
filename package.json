@@ -15,7 +15,7 @@
   },
   "engines": {
     "node": ">=16.20.1"
-  }
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shlokbhargava/MERN-ProShop.git"
